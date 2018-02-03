@@ -1,23 +1,27 @@
 language: generic
 
-###############################################################################
 install:
-  - travis_retry wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubuntu
-  - chmod +x ./install-tl-ubuntu
-  - sudo ./install-tl-ubuntu
-  - export PATH="/opt/texbin:$PATH"
+- travis_retry wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubuntu
+- chmod +x ./install-tl-ubuntu
+- sudo ./install-tl-ubuntu
+- export PATH="/opt/texbin:$PATH"
 
-###############################################################################
 before_script:
-  # Check texlive version
-  - tlmgr version -v
-  # Check which tex packages we have available
-  - tlmgr info --only-installed ||
-        echo "Couldn't retrieve the texlive package list!"
+- tlmgr version -v
+- tlmgr info --only-installed || echo "Couldn't retrieve the texlive package list!"
 
-###############################################################################
 script:
-    # pdflatex -halt-on-error -interaction nonstopmode brewing &&
-    # bibtex brewing &&
-  - pdflatex -halt-on-error -interaction nonstopmode brewing &&
-    pdflatex -halt-on-error -interaction nonstopmode brewing
+- mkdir _build
+- pdflatex -halt-on-error -interaction -output-directory _build nonstopmode brewing
+  &&
+- pdflatex -halt-on-error -interaction -output-directory _build  nonstopmode brewing
+
+deploy:
+  provider: output
+  api_key:
+    secure: CiexvFhpxSKdmUN2vNe+/DlpCcAp5cagN9d9wwqITWDB5u/DWXxuQgokOhQCGjcXLN0451C/VZt1XEUyVMRLYWlgs1IVYJXRdxf2Mrk6gyviIheeQ5eK31mRZvHF2Eo2Lu/MyqJWgDKbDPluz+skwlg+TfXMhXHRDxw201NUZ+vHxFVIdJOCijudkOgpQSN/3j0tvHMdKo0/0MucoPgeiZGL7SiIJVHgR9SkDNaniP1VajHn3G9Gci+9h1yCf5MofpVYmU5XhcxXknHuhXalf3+9J/1Z0AMYyxsHv3hMMPiE5uyLsHL5LTcepEY7aO5/OGg8fC2e8mg1/qYzhIvUeRBshzNP6Rz/oZvKM3PR1sw2Ri1xQPB+7fUJfFgJ/bvrS8bHIDIq4cOirtUqBu4tAfFr2s3laA8sfCHcwlfvFrVF77GzzlkcQsEbYsKOOsClORfLSGS9FF0u0/7RWagPynz9+QldyqNjL9h4la9GhnlMUlpTRxFlfKigRTmM4xLmnncZXYmKYjg29GrODlao80ObywR705WVUYwHvjJvn23C0AocM/N9GomttmKFYUL9wn+QSHOwjnwfccc1AwhPcvNz53trZUQtnhYJ84huc8oLjIQzEUYkJQwz5OFAvpsCYU7lZ44dSIk/R13YnJL0YYu4d5sM4EPAz7q13Tkhoz8=
+  file:
+  - _build/brewing.pdf
+  skip_cleanup: true
+  on:
+    repo: mcallisterjp/brewing
