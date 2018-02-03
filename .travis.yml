@@ -12,9 +12,8 @@ before_script:
 
 script:
 - mkdir _build
-- pdflatex -halt-on-error -interaction -output-directory _build nonstopmode brewing
-  &&
-- pdflatex -halt-on-error -interaction -output-directory _build  nonstopmode brewing
+- pdflatex -halt-on-error -output-directory _build -interaction nonstopmode brewing
+- pdflatex -halt-on-error -output-directory _build -interaction nonstopmode brewing
 
 deploy:
   provider: output
